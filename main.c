@@ -121,14 +121,14 @@ void borrowBook(struct Book library[], int numBooks, struct User users[], int cu
 {
     if (users[currentUser].borrowedBooksCount >= MAX_BORROW) 
     {
-        printf("No more books for you.\n");
+        printf("You cannot borrow more than %d books.\n", MAX_BORROW);
         return;
     }
 
     char title[MAX_TITLE];
     printf("Enter book title to borrow: ");
     fgets(title, MAX_TITLE, stdin);
-    title[strcspn(title, "\n")] = '\0';  
+    title[strcspn(title, "\n")] = '\0';  // Remove newline character
 
     for (int i = 0; i < numBooks; i++) 
     {
@@ -145,6 +145,8 @@ void borrowBook(struct Book library[], int numBooks, struct User users[], int cu
 
     printf("Book '%s' is either not available or already borrowed.\n", title);
 }
+
+
 // Function to return a book
 void returnBook(struct Book library[], int numBooks, struct User users[], int currentUser) 
 {
@@ -277,7 +279,6 @@ void deleteUser(struct User users[], int *numUsers, int currentUser)
         printf("No user found with username '%s'.\n", username);
     }
 }
-
 // Function to add a new user (only for admin)
 void addUser(struct User users[], int *numUsers) 
 {
@@ -295,11 +296,15 @@ void addUser(struct User users[], int *numUsers)
     printf("Enter password: ");
     fgets(newUser.password, MAX_PASSWORD, stdin);
     newUser.password[strcspn(newUser.password, "\n")] = '\0';
-    users[*numUsers] = newUser;
-    (*numUsers)++;
+
+    // Initialize borrowedBooksCount to 0 for new user
+    newUser.borrowedBooksCount = 0;  
+    (*numUsers)++;  // Increase  users
+    users[*numUsers - 1] = newUser;  // Add  to the array
 
     printf("New user '%s' added successfully.\n", newUser.name);
 }
+
 int main()
 {
     struct Book library[MAX_BOOKS];  // store books
